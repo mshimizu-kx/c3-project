@@ -74,29 +74,32 @@ jobs:
   test-frontend:
     docker:
       # Docker image here
-      # Build phase
-      # temporal
+      # Test phase
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
-      # temporal
-      - run: echo "temporal"
+      # Test phase
+      - run:
+          name: "Run all unit tests"
+          command: | 
+            npm run test
                 
   test-backend:
     docker:
       # Docker image here
-      # Build phase
-      # temporal
+      # Test phase
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
-      # temporal
-      - run: echo "temporal"
-            
+      # Test phase
+      - run:
+          name: "Run all unit tests"
+          command: | 
+            npm run test
   scan-frontend:
     docker:
       # Docker image here
