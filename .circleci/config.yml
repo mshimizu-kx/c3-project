@@ -87,6 +87,7 @@ jobs:
       - run:
           name: "Run all unit tests"
           command: | 
+            cd frontend
             npm run test
                 
   test-backend:
@@ -105,6 +106,7 @@ jobs:
       - run:
           name: "Run all unit tests"
           command: | 
+            cd backend
             npm run test
   scan-frontend:
     docker:
