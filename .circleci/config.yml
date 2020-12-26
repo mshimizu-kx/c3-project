@@ -111,28 +111,40 @@ jobs:
   scan-frontend:
     docker:
       # Docker image here
-      # Build phase
-      # temporal
+      # Analyze phase
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
-      # temporal
-      - run: echo "temporal"
+      # Analyze phase
+      - checkout
+      - restore_cache:
+          keys: [frontend-build2]
+      - run:
+          name: Check vulnarability
+          command: |
+            cd frontend
+            npm audit --audit-level=critical
 
   scan-backend:
     docker:
       # Docker image here
-      # Build phase
-      # temporal
+      # Analyze phase
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
       # Your job code here
-      # temporal
-      - run: echo "temporal"
+      # Analyze phase
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Check vulnarability
+          command: |
+            cd frontend
+            npm audit --audit-level=critical
 
   deploy-infrastructure:
     docker:
