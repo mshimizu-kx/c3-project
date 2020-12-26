@@ -284,6 +284,8 @@ jobs:
 cleanup:
     docker:
       # Docker image here
+      # Build phase
+      - image: amazon/aws-cli
     steps:
       # Checkout code from git
       - run:
