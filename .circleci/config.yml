@@ -80,7 +80,7 @@ jobs:
       # Restore from cache
       # Your job code here
       # temporal
-      - run echo "temporal"
+      - run: echo "temporal"
                 
   test-backend:
     docker:
@@ -93,7 +93,7 @@ jobs:
       # Restore from cache
       # Your job code here
       # temporal
-      - run echo "temporal"
+      - run: echo "temporal"
             
   scan-frontend:
     docker:
@@ -106,7 +106,7 @@ jobs:
       # Restore from cache
       # Your job code here
       # temporal
-      - run echo "temporal"
+      - run: echo "temporal"
 
   scan-backend:
     docker:
@@ -119,7 +119,7 @@ jobs:
       # Restore from cache
       # Your job code here
       # temporal
-      - run echo "temporal"
+      - run: echo "temporal"
 
   deploy-infrastructure:
     docker:
