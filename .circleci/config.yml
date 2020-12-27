@@ -158,7 +158,7 @@ jobs:
       - run:
           name: Ensure back-end infrastructure exists
           command: |
-            aws cloudformation deploy \
+            aws cloudformation create-stack \
               --template-file .circleci/files/backend.yml \
               --tags project=C3 category=backend\
               --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
@@ -172,7 +172,7 @@ jobs:
       - run:
           name: Ensure front-end infrastructure exist
           command: |
-            aws cloudformation deploy \
+            aws cloudformation update-stack \
               --template-file .circleci/files/frontend.yml \
               --tags project=C3 category=frontend\
               --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
