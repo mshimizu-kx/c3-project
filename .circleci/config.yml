@@ -172,11 +172,11 @@ jobs:
       - run:
           name: Ensure front-end infrastructure exist
           command: |
-            aws cloudformation update-stack \
-              --template-body file://.circleci/files/frontend.yml \
-              --tags Key=project,Value=C3 Key=category,Value=frontend\
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags project=C3 category=frontend\
               --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
-              --parameters ParameterKey=ID,ParameterValue="$CIRCLE_WORKFLOW_ID"  
+              --parameter-overrides ID="$CIRCLE_WORKFLOW_ID"  
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -247,74 +247,115 @@ jobs:
           name: Send migration results to memstash
           command: |
             # Your code here
-            exit 1
-     # Here's where you will add some code to rollback on failure      
+            # Deploy phase
+            if grep "has been executed successfully" migration.log
+            then
+              curl -H "Content-Type: text/plain" -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
+            else
+              npm run migrations:revert
+            fi
+     # Here's where you will add some code to rollback on failure
 
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      # Build phase
+      # Deploy phase
       - image: amazon/aws-cli
     steps:
       # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
             # your code here
+            # Deploy phase
+            yum -y install tar gzip
       - run:
           name: Get backend url
           command: |
             # your code here
+            # Deploy phase
+            export BACKEND_IP=$(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET https://api.memstash.io/values/udapeople_backend_url)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
           name: Deploy frontend objects
           command: |
             # your code here
+            # Deploy phase
+            cd frontend
+            npm run build
+            aws s3 cp ./dist/* s3://udapeople-${CIRCLE_WORKFLOW_ID}
       # Here's where you will add some code to rollback on failure      
                     
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      # Build phase
+      # Deploy phase
       - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
+      # Deploy phase
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "17:f7:f5:c6:14:2a:2d:c5:9f:e9:63:76:ce:aa:2c:ad"
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk add --update ansible
       - run:
           name: Deploy backend
           command: |
             # your code here
+            # Deploy phase
+            cd backend
+            yes | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
     docker:
       # Lightweight Docker image 
-      # Build phase
+      # Smoke test phase
       - image: alpine:latest
     steps:
       # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
             # your code here
+            # Smoke test phase
+            apk --no-cache add curl
       - run:
           name: Get backend url
           command: |
             # your code here
+            # Smoke test phase
+            export BACKEND_IP=$(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET https://api.memstash.io/values/udapeople_backend_url)
+            export API_URL="http://${BACKEND_IP}:3030"
       - run:
           name: Backend smoke test.
           command: |
             # your code here
+            # Smoke test phase
+            curl -s --head ${API_URL}
       - run:
           name: Frontend smoke test.
           command: |
             # your code here
+            # Smoke test phase
+            export URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-west-2.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
       # Here's where you will add some code to rollback on failure  
 
   cloudfront-update:
