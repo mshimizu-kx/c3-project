@@ -224,7 +224,7 @@ jobs:
           command: |
             # Your code here
             # Infrastructure phase
-            yes | ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt --private-key udacity.pem
+            (yes || true) | ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt --private-key udacity.pem
       # Here's where you will add some code to rollback on failure      
 
   run-migrations:
@@ -314,7 +314,7 @@ jobs:
             # your code here
             # Deploy phase
             cd backend
-            yes | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
+            (yes || true) | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
