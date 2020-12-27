@@ -184,7 +184,7 @@ jobs:
             # Infrastructure phase
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:category,Value=backend" \
+              --filters "Name=tag:category,Values=backend" \
               --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
