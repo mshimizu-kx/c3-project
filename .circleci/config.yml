@@ -163,6 +163,10 @@ jobs:
               --tags Key=project,Value=C3 Key=category,Value=backend \
               --stack-name "prod-backend-$CIRCLE_WORKFLOW_ID" \
               --parameters ParameterKey=ID,ParameterValue="$CIRCLE_WORKFLOW_ID"  
+      - run+
+          name: Wait until stack is created.
+          command: |
+            sleep 60
       - run:
           name: Store backend URL with memstash
           command: |
