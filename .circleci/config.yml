@@ -168,15 +168,18 @@ jobs:
           command: |
             export BACKEND_URL=$(aws cloudformation list-exports --query "Exports[?Name==\`udapeople-backend-url\`].Value" --no-paginate --output text)
             curl -H "Content-Type: text/plain" -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request PUT --data "$BACKEND_URL" https://api.memstash.io/values/udapeople_backend_url
-
+      - run:
+          name: Wait until create_in_progress finishes
+          command: |
+            sleep 15
       - run:
           name: Ensure front-end infrastructure exist
           command: |
-            aws cloudformation deploy \
-              --template-file .circleci/files/frontend.yml \
-              --tags project=C3 category=frontend\
+            aws cloudformation update-stack \
+              --template-body file://.circleci/files/frontend.yml \
+              --tags Key=project,Value=C3 Key=category,Value=frontend \
               --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
-              --parameter-overrides ID="$CIRCLE_WORKFLOW_ID"  
+              --parameters ParameterKey=ID,ParameterValue="$CIRCLE_WORKFLOW_ID"  
       - run:
           name: Add back-end ip to ansible inventory
           command: |
