@@ -18,7 +18,11 @@
 
     - name: "install python for Ansible."
       # Your code here
-      shell: python --version
+      # Deploy phase
+      become: yes
+      apt:
+        name: python
+        state: latest
 
   roles:
     # Your code here
