@@ -185,7 +185,7 @@ jobs:
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:category,Value=backend" \
-              --output text >> inventory.txt
+              --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -195,22 +195,31 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      # Build phase
+      # Infrastructure phase
       - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
+      # Infrastructure phase
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "17:f7:f5:c6:14:2a:2d:c5:9f:e9:63:76:ce:aa:2c:ad"
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
             # Your code here
-            exit 1
+            # Infrastructure phase
+            apk add --update ansible
       - run:
           name: Configure server
           command: |
             # Your code here
-            exit 1
+            # Infrastructure phase
+            yes | ansible-playbook .circleci/ansible/configure-server.yml -i project/.circleci/ansible/inventory.txt --private-key udacity.pem
       # Here's where you will add some code to rollback on failure      
 
   run-migrations:
