@@ -160,7 +160,7 @@ jobs:
           command: |
             aws cloudformation create-stack \
               --template-body file://.circleci/files/backend.yml \
-              --tags project=C3 category=backend\
+              --tags Key=project,Value=C3 Key=category,Value=backend \
               --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
               --parameters ParameterKey=ID,ParameterValue="$CIRCLE_WORKFLOW_ID"  
       - run:
@@ -174,7 +174,7 @@ jobs:
           command: |
             aws cloudformation update-stack \
               --template-body file://.circleci/files/frontend.yml \
-              --tags project=C3 category=frontend\
+              --tags Key=project,Value=C3 Key=category,Value=frontend\
               --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
               --parameters ParameterKey=ID,ParameterValue="$CIRCLE_WORKFLOW_ID"  
       - run:
@@ -230,11 +230,11 @@ jobs:
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
-      # Infrastructure phase
+      # Deploy phase
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
-      # infrastructure phase
+      # Deploy phase
       - checkout
       - run:
           name: Run migrations
@@ -242,7 +242,7 @@ jobs:
             # Your code here
             # Infrastructure phase
             cd backend
-            npm run migrations
+            npm run migrations >> migration.log
       - run:
           name: Send migration results to memstash
           command: |
