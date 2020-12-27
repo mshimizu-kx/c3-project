@@ -182,6 +182,9 @@ jobs:
           command: |
             # Your code here
             # Infrastructure phase
+            pwd
+            ls -al
+            cat .circleci/ansible/inventory.txt
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:category,Values=backend" \
@@ -219,7 +222,9 @@ jobs:
           command: |
             # Your code here
             # Infrastructure phase
-            yes | ansible-playbook .circleci/ansible/configure-server.yml -i project/.circleci/ansible/inventory.txt --private-key udacity.pem
+            pwd
+            ls -al
+            yes | ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt --private-key udacity.pem
       # Here's where you will add some code to rollback on failure      
 
   run-migrations:
@@ -237,7 +242,7 @@ jobs:
             # Your code here
             # Infrastructure phase
             cd backend
-            npm run migrations >> 
+            npm run migrations
       - run:
           name: Send migration results to memstash
           command: |
