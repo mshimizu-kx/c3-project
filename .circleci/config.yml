@@ -161,7 +161,7 @@ jobs:
             aws cloudformation create-stack \
               --template-body file://.circleci/files/backend.yml \
               --tags Key=project,Value=C3 Key=category,Value=backend \
-              --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
+              --stack-name "prod-backend-$CIRCLE_WORKFLOW_ID" \
               --parameters ParameterKey=ID,ParameterValue="$CIRCLE_WORKFLOW_ID"  
       - run:
           name: Store backend URL with memstash
@@ -169,29 +169,24 @@ jobs:
             export BACKEND_URL=$(aws cloudformation list-exports --query "Exports[?Name==\`udapeople-backend-url\`].Value" --no-paginate --output text)
             curl -H "Content-Type: text/plain" -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request PUT --data "$BACKEND_URL" https://api.memstash.io/values/udapeople_backend_url
       - run:
-          name: Wait until create_in_progress finishes
-          command: |
-            sleep 60
-      - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation update-stack \
               --template-body file://.circleci/files/frontend.yml \
               --tags Key=project,Value=C3 Key=category,Value=frontend \
-              --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
+              --stack-name "prod-frontend-$CIRCLE_WORKFLOW_ID" \
               --parameters ParameterKey=ID,ParameterValue="$CIRCLE_WORKFLOW_ID"  
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             # Your code here
             # Infrastructure phase
-            pwd
-            ls -al
             cat .circleci/ansible/inventory.txt
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:category,Values=backend" \
               --output text >> .circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -225,8 +220,6 @@ jobs:
           command: |
             # Your code here
             # Infrastructure phase
-            pwd
-            ls -al
             yes | ansible-playbook .circleci/ansible/configure-server.yml -i .circleci/ansible/inventory.txt --private-key udacity.pem
       # Here's where you will add some code to rollback on failure      
 
