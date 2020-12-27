@@ -407,21 +407,30 @@ workflows:
       - build-backend
       - test-frontend:
           requires: [build-frontend]
+          # remove filter afterward
+          filters:
+            branches:
+              only: [master]
       - test-backend:
           requires: [build-backend]
+          # remove filter afterward
+          filters:
+            branches:
+              only: [master]
       - scan-backend:
           requires: [build-backend]
+          # remove filter afterward
           filters:
             branches:
               only: [master]
       - scan-frontend:
           requires: [build-frontend]
+          # remove filter afterward
           filters:
             branches:
               only: [master]
       - deploy-infrastructure:
           #requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          requires: [test-frontend, test-backend]
           filters:
             branches:
               only: [test-feature-branch]
