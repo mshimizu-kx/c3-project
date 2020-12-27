@@ -149,33 +149,43 @@ jobs:
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
-      # Build phase
+      # Infrastructure phase
       - image: amazon/aws-cli
     steps:
       # Checkout code from git
+      - checkout
+      - run: yum -y install tar gzip
       - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              #--tags project=your-tag \
-              # --stack-name "your back-end stack name with workflow id" \
-              # --parameter-overrides ID="your workflow id"  
-              exit 1
+              --tags project=C3 category=backend\
+              --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
+              --parameter-overrides ID="$CIRCLE_WORKFLOW_ID"  
+      - run:
+          name: Store backend URL with memstash
+          command: |
+            export BACKEND_URL=aws cloudformation list-exports --query "Exports[?Name==\`udapeople-backend-url\`].Value" --no-paginate --output text
+            curl -H "Content-Type: text/plain" -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request PUT --data "$BACKEND_URL" https://api.memstash.io/values/udapeople_backend_url
+
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              #--tags project=your-tag \
-              # --stack-name "your front-end stack name with workflow id" \
-              # --parameter-overrides ID="your workflow id"  
-              exit 1
+              --tags project=C3 category=frontend\
+              --stack-name "prod-$CIRCLE_WORKFLOW_ID" \
+              --parameter-overrides ID="$CIRCLE_WORKFLOW_ID"  
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             # Your code here
-            exit 1
+            # Infrastructure phase
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:category,Value=backend" \
+              --output text >> inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -206,15 +216,19 @@ jobs:
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
-      # Build phase
+      # Infrastructure phase
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
+      # infrastructure phase
+      - checkout
       - run:
           name: Run migrations
           command: |
             # Your code here
-            exit 1
+            # Infrastructure phase
+            cd backend
+            npm run migrations >> 
       - run:
           name: Send migration results to memstash
           command: |

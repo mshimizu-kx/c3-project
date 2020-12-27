@@ -35,3 +35,10 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
+
+Outputs:
+  EC2Instance:
+    Decription: URL of backend
+    Value: !Sub "http://${EC2Instance.DNSName}"
+    Export:
+      Name: "udapeople-backend-url"
