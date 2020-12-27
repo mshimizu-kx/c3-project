@@ -39,6 +39,6 @@ Resources:
 Outputs:
   EC2Instance:
     Description: URL of backend
-    Value: !Sub "http://${EC2Instance.DNSName}"
+    Value: !Sub "http://${EC2Instance.PublicDnsName}"
     Export:
       Name: "udapeople-backend-url"
