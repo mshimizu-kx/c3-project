@@ -18,8 +18,6 @@
     global: yes
     production: yes
     state: present
-
-- name: "set environmental vatiables"
   environment:
     ENVIRONMENT: production
     TYPEORM_CONNECTION: postgres
