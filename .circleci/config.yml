@@ -171,7 +171,7 @@ jobs:
       - run:
           name: Wait until create_in_progress finishes
           command: |
-            sleep 30
+            sleep 60
       - run:
           name: Ensure front-end infrastructure exist
           command: |
