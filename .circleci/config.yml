@@ -236,11 +236,13 @@ jobs:
       # Checkout code from git
       # Deploy phase
       - checkout
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Run migrations
           command: |
             # Your code here
-            # Infrastructure phase
+            # Deploy phase
             cd backend
             npm run migrations >> migration.log
       - run:
