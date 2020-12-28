@@ -39,7 +39,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build2]
+          keys: [frontend-build3]
       - run:
           name: Build front-end
           command: |
@@ -49,8 +49,8 @@ jobs:
             npm i
             npm run build
       - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build2
+          paths: [frontend/node_modules, frontend/dist]
+          key: frontend-build3
 
   build-backend:
     docker:
@@ -58,7 +58,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build2]
       - run:
           name: Back-end build
           command: |
@@ -68,8 +68,8 @@ jobs:
              npm i
              npm run build
       - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+          paths: [backend/node_modules, backend/dist]
+          key: backend-build2
 
   test-frontend:
     docker:
@@ -83,7 +83,7 @@ jobs:
       # Test phase
       - checkout
       - restore_cache:
-          keys: [frontend-build2]
+          keys: [frontend-build3]
       - run:
           name: "Run all unit tests"
           command: | 
@@ -102,7 +102,7 @@ jobs:
       # Test phase
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build2]
       - run:
           name: "Run all unit tests"
           command: | 
@@ -120,7 +120,7 @@ jobs:
       # Analyze phase
       - checkout
       - restore_cache:
-          keys: [frontend-build2]
+          keys: [frontend-build3]
       - run:
           name: Check vulnarability
           command: |
@@ -139,7 +139,7 @@ jobs:
       # Analyze phase
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build2]
       - run:
           name: Check vulnarability
           command: |
@@ -237,7 +237,7 @@ jobs:
       # Deploy phase
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build2]
       - run:
           name: Run migrations
           command: |
@@ -268,7 +268,7 @@ jobs:
       # Checkout code from git
       - checkout
       - restore_cache:
-          keys: [frontend-build2]
+          keys: [frontend-build3]
       - run:
           name: Install dependencies
           command: |
@@ -304,7 +304,7 @@ jobs:
       # Deploy phase
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build2]
       - add_ssh_keys:
           fingerprints:
             - "17:f7:f5:c6:14:2a:2d:c5:9f:e9:63:76:ce:aa:2c:ad"
