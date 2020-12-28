@@ -250,7 +250,6 @@ jobs:
           command: |
             # Your code here
             # Deploy phase
-            echo $(pwd)
             cd backend
             if grep "has been executed successfully" migration.log
             then
@@ -268,6 +267,8 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - restore_cache:
+          keys: [frontend-build2]
       - run:
           name: Install dependencies
           command: |
@@ -288,7 +289,6 @@ jobs:
             # your code here
             # Deploy phase
             cd frontend
-            npm run build
             aws s3 cp ./dist/* s3://udapeople-${CIRCLE_WORKFLOW_ID}
       # Here's where you will add some code to rollback on failure      
                     
@@ -303,6 +303,8 @@ jobs:
       # attach workspace
       # Deploy phase
       - checkout
+      - restore_cache:
+          keys: [backend-build]
       - add_ssh_keys:
           fingerprints:
             - "17:f7:f5:c6:14:2a:2d:c5:9f:e9:63:76:ce:aa:2c:ad"
