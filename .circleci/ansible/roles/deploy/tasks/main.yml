@@ -5,6 +5,7 @@
     state: directory
 
 - name: Copy compiled files
+  become: yes
   template:
-    src: "files/"
+    src: "~/project/.circleci/ansible/roles/deploy/files/"
     dest: "~/web/"
