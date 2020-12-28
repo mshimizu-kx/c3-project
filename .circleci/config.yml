@@ -267,14 +267,14 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - restore_cache:
-          keys: [frontend-build3]
       - run:
           name: Install dependencies
           command: |
             # your code here
             # Deploy phase
             yum -y install tar gzip
+      - restore_cache:
+          keys: [frontend-build3]
       - run:
           name: Get backend url
           command: |

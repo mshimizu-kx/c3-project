@@ -6,5 +6,5 @@
 
 - name: Copy compiled files
   template:
-    src: "~/project/backend/dist/*"
-    dest: "~/web/*"
+    src: "/home/circleci/project/backend/dist/*"
+    dest: "~/web/"
