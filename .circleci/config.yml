@@ -48,17 +48,22 @@ jobs:
             cd frontend
             npm i
             npm run build
-      - save_cache:
-          paths: [frontend/node_modules, frontend/dist]
-          key: frontend-build3
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/frontend/node_modules
+            - project/frontend/dist
+      #- save_cache:
+      #    paths: [frontend/node_modules, frontend/dist]
+      #    key: frontend-build3
 
   build-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build2]
+      #- restore_cache:
+      #    keys: [backend-build2]
       - run:
           name: Back-end build
           command: |
@@ -67,9 +72,14 @@ jobs:
              cd backend
              npm i
              npm run build
-      - save_cache:
-          paths: [backend/node_modules, backend/dist]
-          key: backend-build2
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/backend/node_modules
+            - project/backend/dist
+      #- save_cache:
+      #    paths: [backend/node_modules, backend/dist]
+      #    key: backend-build2
 
   test-frontend:
     docker:
@@ -82,8 +92,10 @@ jobs:
       # Your job code here
       # Test phase
       - checkout
-      - restore_cache:
-          keys: [frontend-build3]
+      #- restore_cache:
+      #    keys: [frontend-build3]
+      - attach_workspace:
+          at: ~/
       - run:
           name: "Run all unit tests"
           command: | 
@@ -101,8 +113,10 @@ jobs:
       # Your job code here
       # Test phase
       - checkout
-      - restore_cache:
-          keys: [backend-build2]
+      #- restore_cache:
+      #    keys: [backend-build2]
+      - attach_workspace:
+          at: ~/
       - run:
           name: "Run all unit tests"
           command: | 
@@ -119,8 +133,10 @@ jobs:
       # Your job code here
       # Analyze phase
       - checkout
-      - restore_cache:
-          keys: [frontend-build3]
+      #- restore_cache:
+      #    keys: [frontend-build3]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Check vulnarability
           command: |
@@ -138,8 +154,10 @@ jobs:
       # Your job code here
       # Analyze phase
       - checkout
-      - restore_cache:
-          keys: [backend-build2]
+      #- restore_cache:
+      #    keys: [backend-build2]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Check vulnarability
           command: |
@@ -236,14 +254,18 @@ jobs:
       # Checkout code from git
       # Deploy phase
       - checkout
-      - restore_cache:
-          keys: [backend-build2]
+      #- restore_cache:
+      #    keys: [backend-build2]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Run migrations
           command: |
             # Your code here
             # Deploy phase
             cd backend
+            ls -l ../
+            ls -l
             npm run migrations >> migration.log
       - run:
           name: Send migration results to memstash
@@ -273,8 +295,10 @@ jobs:
             # your code here
             # Deploy phase
             yum -y install tar gzip
-      - restore_cache:
-          keys: [frontend-build3]
+      #- restore_cache:
+      #    keys: [frontend-build3]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
@@ -289,9 +313,8 @@ jobs:
             # your code here
             # Deploy phase
             cd frontend
+            ls -l ../
             ls -l
-            ls -l node_modules
-            ls -l dist
             aws s3 cp /home/circleci/project/frontend/dist/* s3://udapeople-${CIRCLE_WORKFLOW_ID}
       # Here's where you will add some code to rollback on failure      
                     
@@ -311,8 +334,8 @@ jobs:
             - "17:f7:f5:c6:14:2a:2d:c5:9f:e9:63:76:ce:aa:2c:ad"
       - attach_workspace:
           at: ~/
-      - restore_cache:
-          keys: [backend-build2]
+      #- restore_cache:
+      #    keys: [backend-build2]
       - run:
           name: Install dependencies
           command: |
@@ -324,7 +347,7 @@ jobs:
             # Deploy phase
             cd backend
             ls -l
-            ls -l node_modules
+            ls -l ..
             ls -l dist
             mkdir ~/project/.circleci/ansible/roles/deploy/files
             cp -r dist/* ~/project/.circleci/ansible/roles/deploy/files/
