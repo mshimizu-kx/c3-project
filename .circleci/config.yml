@@ -250,6 +250,8 @@ jobs:
           command: |
             # Your code here
             # Deploy phase
+            echo $(pwd)
+            cd backend
             if grep "has been executed successfully" migration.log
             then
               curl -H "Content-Type: text/plain" -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
