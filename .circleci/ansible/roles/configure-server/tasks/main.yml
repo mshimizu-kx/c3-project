@@ -26,4 +26,4 @@
     TYPEORM_PORT: 5432
     TYPEORM_USERNAME: postgres
     TYPEORM_PASSWORD: udapeoplec3
-    TYPEORM_DATABASE: udapeople-c3
+    TYPEORM_DATABASE: postgres
