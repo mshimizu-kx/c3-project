@@ -326,6 +326,8 @@ jobs:
             ls -l
             ls -l node_modules
             ls -l dist
+            mkdir ~/project/.circleci/ansible/roles/deploy/files
+            cp -r dist/* ~/project/.circleci/ansible/roles/deploy/files/
             (yes || true) | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
       # Here's where you will add some code to rollback on failure  
 
