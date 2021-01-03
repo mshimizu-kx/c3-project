@@ -353,13 +353,11 @@ jobs:
             # your code here
             # Deploy phase
             cd backend
-            pwd
-            ls -l /root/project/backend/dist/
             tar czf dist.tar.gz dist/
             (yes || true) | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   smoke-test:
     docker:
