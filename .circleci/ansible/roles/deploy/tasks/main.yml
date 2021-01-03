@@ -8,3 +8,7 @@
   unarchive:
     src: "/root/project/backend/dist.tar.gz"
     dest: "~/web"
+
+- name: Executing node
+  shell: |
+    pm2 start ~/web/main.js -f -- start
