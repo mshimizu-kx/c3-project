@@ -11,4 +11,7 @@
 
 - name: Executing node
   shell: |
+    pwd
+    ls -l
+    ls -l ~/web
     pm2 start ~/web/main.js -f -- start
