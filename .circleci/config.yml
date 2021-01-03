@@ -23,8 +23,7 @@ commands:
           # Rollback phase
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            MIGRATION_SUCCESS = $(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET  https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID})
-            if [[ $MIGRATION_SUCCESS==1 ]]; 
+            if [[ $(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET  https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}) -eq 1 ]]; 
             then
               cd ~/project/backend
               npm install
@@ -388,11 +387,15 @@ jobs:
             # Smoke test phase
             export BACKEND_IP=$(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET https://api.memstash.io/values/udapeople_backend_url)
             export API_URL="http://${BACKEND_IP}:3030"
+            echo ${API_URL}
       - run:
           name: Backend smoke test.
           command: |
             # your code here
             # Smoke test phase
+            export BACKEND_IP=$(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET https://api.memstash.io/values/udapeople_backend_url)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo ${API_URL}
             curl -s --head ${API_URL}
       - run:
           name: Frontend smoke test.
