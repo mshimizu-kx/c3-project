@@ -23,7 +23,7 @@ commands:
           # Rollback phase
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            export MIGRATION_SUCCESS = $(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET  https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID})
+            MIGRATION_SUCCESS = $(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET  https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID})
             if [[ $MIGRATION_SUCCESS==1 ]]; 
             then
               cd ~/project/backend
@@ -356,8 +356,8 @@ jobs:
             # Deploy phase
             pwd
             cd backend
-            cp -r dist/* /home/circleci/project/.circleci/ansible/roles/deploy/files/
-            ls -l /home/circleci/project/.circleci/ansible/roles/deploy/files/
+            pwd
+            ls -l /root/project/backend/dist/
             (yes || true) | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
       # Here's where you will add some code to rollback on failure
       - destroy-environment

@@ -7,5 +7,5 @@
 - name: Copy compiled files
   become: yes
   copy:
-    src: "/home/circleci/project/backend/dist/"
+    src: "/root/project/backend/dist/"
     dest: "~/web/"
