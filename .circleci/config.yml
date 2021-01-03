@@ -352,12 +352,12 @@ jobs:
           command: |
             # your code here
             # Deploy phase
-            cd backend
-            tar czf dist.tar.gz dist/
+            cd backend/dist
+            tar czf backend.tar.gz ./
             (yes || true) | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
       # Here's where you will add some code to rollback on failure
-      # - destroy-environment
-      # - revert-migrations
+      - destroy-environment
+      - revert-migrations
 
   smoke-test:
     docker:
@@ -380,15 +380,6 @@ jobs:
               && pip3 install --upgrade pip \
               && pip3 install awscli
       - run:
-          name: Backend smoke test.
-          command: |
-            # your code here
-            # Smoke test phase
-            export BACKEND_IP=$(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET https://api.memstash.io/values/udapeople_backend_url)
-            export API_URL="http://${BACKEND_IP}:3030/api/status"
-            echo ${API_URL}
-            curl -s --head ${API_URL}
-      - run:
           name: Frontend smoke test.
           command: |
             # your code here
@@ -400,9 +391,18 @@ jobs:
             else
               return 0
             fi
+      - run:
+          name: Backend smoke test.
+          command: |
+            # your code here
+            # Smoke test phase
+            export BACKEND_IP=$(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET https://api.memstash.io/values/udapeople_backend_url)
+            export API_URL="http://${BACKEND_IP}:3030/api/status"
+            echo ${API_URL}
+            curl -s --head ${API_URL}
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   cloudfront-update:
     docker:

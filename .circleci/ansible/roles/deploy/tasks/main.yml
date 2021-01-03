@@ -9,6 +9,17 @@
     src: "/root/project/backend/dist.tar.gz"
     dest: "~/web"
 
+- name: Copy package.json files
+  unarchive:
+    src: "/root/project/backend/package.json"
+    dest: "~/web"
+
+- name: Install dependencies
+  shell: |
+    cd ~/web
+    npm i
+
 - name: Executing node
   shell: |
-    pm2 start ~/web/dist/main.js -f -- start
+    cd ~/web
+    pm2 start main.js --name backend
