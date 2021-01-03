@@ -6,7 +6,7 @@
 
 - name: Copy compiled files
   unarchive:
-    src: "/root/project/backend/dist.tar.gz"
+    src: "/root/project/backend/backend.tar.gz"
     dest: "~/web"
 
 - name: Copy package.json files
