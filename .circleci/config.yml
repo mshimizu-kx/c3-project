@@ -346,6 +346,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            apk --no-cache add curl
             apk add --update ansible
             pip3 install awscli
       - run:
