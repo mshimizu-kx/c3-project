@@ -10,9 +10,9 @@
     dest: "~/web"
 
 - name: Copy package.json files
-  unarchive:
+  copy:
     src: "/root/project/backend/package.json"
-    dest: "~/web"
+    dest: "~/web/package.json"
 
 - name: Install dependencies
   shell: |
