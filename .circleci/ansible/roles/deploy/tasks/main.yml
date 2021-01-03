@@ -1,25 +1,15 @@
 ---
-- name: Creates directory
-  file:
-    path: ~/web
-    state: directory
+- name: Upgrade npm
+  become: true
+  shell: |
+    npm install -g npm@latest
 
 - name: Copy compiled files
   unarchive:
-    src: "/root/project/backend/dist/backend.tar.gz"
-    dest: "~/web"
-
-- name: Copy package.json files
-  copy:
-    src: "/root/project/backend/package.json"
-    dest: "~/web/package.json"
-
-- name: Install dependencies
-  shell: |
-    cd ~/web
-    npm i
+    src: /root/project/backend.tar.gz
+    dest: /home/ubuntu/
 
 - name: Executing node
   shell: |
-    cd ~/web
+    cd backend/dist
     pm2 start main.js --name backend

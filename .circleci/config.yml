@@ -312,12 +312,14 @@ jobs:
             export BACKEND_IP=$(curl -H "token: 776ef8d6-6840-4308-bb5c-1e48824cf347" --request GET https://api.memstash.io/values/udapeople_backend_url)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
+            echo "${API_URL}" >> "frontend/.env"
       - run:
           name: Deploy frontend objects
           command: |
             # your code here
             # Deploy phase
             cd frontend
+            npm run build
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
       # Here's where you will add some code to rollback on failure
       - destroy-environment
@@ -352,8 +354,7 @@ jobs:
           command: |
             # your code here
             # Deploy phase
-            cd backend/dist
-            tar czf backend.tar.gz ./
+            tar czf backend.tar.gz backend/
             (yes || true) | ansible-playbook ~/project/.circleci/ansible/deploy-backend.yml -i ~/project/.circleci/ansible/inventory.txt --private-key ~/project/udacity.pem
       # Here's where you will add some code to rollback on failure
       - destroy-environment
