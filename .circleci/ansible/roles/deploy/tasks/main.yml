@@ -5,7 +5,6 @@
     state: directory
 
 - name: Copy compiled files
-  become: yes
   unarchive:
     src: "/root/project/backend/dist.tar.gz"
-    dest: "~/web/"
+    dest: "~/web"
