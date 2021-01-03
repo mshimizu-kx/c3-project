@@ -7,5 +7,5 @@
 - name: Copy compiled files
   become: yes
   template:
-    src: "~/project/.circleci/ansible/roles/deploy/files/"
+    src: "/home/circleci/project/.circleci/ansible/roles/deploy/files/"
     dest: "~/web/"
