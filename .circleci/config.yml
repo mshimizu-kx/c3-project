@@ -443,7 +443,7 @@ jobs:
     steps:
       # Checkout code from git
       - run:
-          name: Get old stack workflow id
+          name: Get old stack workflow id and Remove old stacks and files
           command: |
             # your code here
             # Cleanup phase
@@ -452,12 +452,7 @@ jobs:
               --no-paginate --output text)
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            
-            # export OldWorkflowID="the id here"
-            # export STACKS=[] #put the list of stacks here
-      - run:
-          name: Remove old stacks and files
-          command: |
+            echo "s3://udapeople-${OldWorkflowID}"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               # your code here
@@ -467,7 +462,6 @@ jobs:
               aws cloudformation delete-stack --stack-name "prod-frontend-${OldWorkflowID}"
             fi
             
-
 workflows:
   default:
     jobs:
