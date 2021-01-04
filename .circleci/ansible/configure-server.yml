@@ -28,3 +28,5 @@
     # Your code here
     # Infrastructure phase
     - configure-server
+    # Monitoring phase
+    - configure-prometheus-node-exporter
