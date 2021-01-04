@@ -458,7 +458,7 @@ jobs:
               # your code here
               # Cleanup phase
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-              aws cloudformation delete-stack --stack-name "prod-cloudfront-frontend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "prod-cloudfront-${OldWorkflowID}"
             fi
             
 workflows:
